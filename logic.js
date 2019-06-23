@@ -1,41 +1,79 @@
 
 
-var cardIdCounter = 1;
-var numberOfCards = 9;
-
-/**
- * I populate an array of images to be used as cards, choosing from an image database of over 1000 images
- * @returns {Array}
- */
-function getCards() {
-    var imageArray = [];
-    for(i = cardIdCounter; i <= cardIdCounter+4; i++){
-        //Get a new card:
-        var card = new Image();
-        card.src = "https://picsum.photos/id/" + i + "/200/200";
-        //Push two of the same card to the deck:
-        imageArray.push(card);
-        imageArray.push(card);
-        //Increment the counter to make sure no card is used twice during the same session (just a cool feature)
-        cardIdCounter++;
-    }
-    return imageArray;
-}
-
-function decorateGame(){
-    var cards = getCards();
-    var counter = 0;
-
-    var testCard = new Image();
-    testCard.src="https://picsum.photos/id/1/200/200";
-    document.getElementById("11").appendChild(testCard);
-}
 window.onload=function(){
-    for(i = 1;i <=numberOfCards; i++ ){
-        console.info(i.toString());
-        let card = document.getElementById(i.toString()); //Use let to allow for block scoped variable
-        card.addEventListener( 'click', function() {
-            card.classList.toggle('is-flipped');
-        });
+    console.log("Creating elements!");
+
+    let page = document.getElementById("page");
+    let usedIndexes = [];
+    let sideIndex = 1;
+    //For each of the three rows
+    for(let y = 1;y <= 4; y++){
+
+        let row = document.createElement('div');
+        row.className = "row";
+
+        //..place three columns
+        for(let x = 1; x <= 4; x++){
+            let column = document.createElement('div');
+            column.className = "column";
+
+            //..that has a card
+            let card = document.createElement('div');
+            card.className = "card";
+            column.appendChild(card); //Append the card so that it exists in the DOM when you try to append sides
+
+            //..which has a front side
+            let frontSide = document.createElement('div');
+            frontSide.className = "card__face card__face--";
+            frontSide.id = sideIndex.toString();
+            sideIndex++;
+            //..with an image:
+            let frontImage = new Image();
+            frontImage.src = 'cardimage.png';
+            frontImage.style.maxHeight = "100%";
+            frontImage.style.maxWidth = "100%";
+            frontSide.appendChild(frontImage);
+            card.appendChild(frontSide);
+
+
+            //..and a back side
+            let backside = document.createElement('div');
+            backside.className = "card__face card__face--back";
+            backside.id = sideIndex;
+            sideIndex++;
+            //..with a random image:
+            let backImage = document.createElement('img');
+            let imageIndex = Math.floor(Math.random() * 1000);
+            while (usedIndexes.indexOf(imageIndex)>=0){
+                imageIndex = Math.floor(Math.random() * 1000);
+            }
+
+            backImage.src = "https://picsum.photos/id/" + imageIndex + "/200/200";
+            usedIndexes.push(imageIndex);
+
+            console.log("Adding image to card");
+
+            backside.appendChild(backImage);
+
+            card.appendChild(backside);
+            //..and of course an event listener
+            card.addEventListener( 'click', function() {
+                card.classList.toggle('is-flipped');
+            });
+            row.appendChild(column);
+        }
+        row.style.height = "25%";
+        page.appendChild(row);
     }
+
+
+
 };
+
+
+
+
+
+
+
+
