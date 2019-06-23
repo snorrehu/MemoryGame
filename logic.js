@@ -1,6 +1,6 @@
 
 
-window.onload=function(){
+window.onload=async function(){
     console.log("Creating elements!");
 
     let page = document.getElementById("page");
@@ -8,7 +8,6 @@ window.onload=function(){
     let sideIndex = 1;
     //For each of the three rows
     for(let y = 1;y <= 4; y++){
-
         let row = document.createElement('div');
         row.className = "row";
 
@@ -44,15 +43,28 @@ window.onload=function(){
             //..with a random image:
             let backImage = document.createElement('img');
             let imageIndex = Math.floor(Math.random() * 1000);
+
+
             while (usedIndexes.indexOf(imageIndex)>=0){
                 imageIndex = Math.floor(Math.random() * 1000);
             }
 
-            backImage.src = "https://picsum.photos/id/" + imageIndex + "/200/200";
+            let imageExists = false;
+            while(!imageExists){
+                let imageUrl = "https://picsum.photos/id/" + imageIndex + "/200/200";
+                try {
+                    backImage.src = imageUrl;
+                    imageExists = true;
+                }catch (e) {
+                    console.log("Could not load image");
+                    imageIndex = Math.floor(Math.random() * 1000);
+                    imageExists = false;
+                }
+            }
+
             usedIndexes.push(imageIndex);
 
             console.log("Adding image to card");
-
             backside.appendChild(backImage);
 
             card.appendChild(backside);
@@ -65,11 +77,7 @@ window.onload=function(){
         row.style.height = "25%";
         page.appendChild(row);
     }
-
-
-
 };
-
 
 
 
