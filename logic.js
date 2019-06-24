@@ -7,7 +7,6 @@ window.onload=async function(){
     let imageUrls = await getImageUrls();
 
     let page = document.getElementById("page");
-    let usedIndexes = [];
     let sideIndex = 1;
     let imagesLeft = 16;
     //For each of the three rows
@@ -27,7 +26,7 @@ window.onload=async function(){
 
             //..which has a front side
             let frontSide = document.createElement('div');
-            frontSide.className = "card__face card__face--";
+            frontSide.className = "card__face card__face--front";
             frontSide.id = sideIndex.toString();
             sideIndex++;
             //..with an image:
@@ -47,6 +46,7 @@ window.onload=async function(){
             let backImage = document.createElement('img');
             let imageIndex = Math.floor(Math.random() * imagesLeft);
             backImage.src = await imageUrls[imageIndex];
+            backImage.style.position = "absolute";
 
             imageUrls.splice(imageIndex,1);
             imagesLeft--;

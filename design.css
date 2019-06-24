@@ -6,6 +6,7 @@ html, body {
 .page-wrap {
     height: 100%;
     margin-left: 33.33%;
+    position: relative;
 }
 
 
@@ -29,12 +30,14 @@ html, body {
 }
 
 .column {
+    position: relative;
     float: left;
     height: 100%;
 }
 
 
 .row:after{
+    position: relative;
     content: "";
     display: table;
     clear: both;
@@ -43,8 +46,8 @@ html, body {
 
 
 .card__face {
-    width: 100%;
     height: 100%;
+    width: 100%;
     backface-visibility: hidden;
     background-size: contain;
 
@@ -52,8 +55,12 @@ html, body {
 
 
 .card__face--back {
-
+    position: absolute;
     transform: rotateY(180deg);
 
+}
+
+.card__face--back--front{
+    position: absolute;
 }
 
