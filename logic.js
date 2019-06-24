@@ -1,11 +1,15 @@
-
+let numberOFCards = 16;
 
 window.onload=async function(){
+    console.log("DOM Loaded");
+
     console.log("Creating elements!");
+    let imageUrls = await getImageUrls();
 
     let page = document.getElementById("page");
     let usedIndexes = [];
     let sideIndex = 1;
+    let imagesLeft = 16;
     //For each of the three rows
     for(let y = 1;y <= 4; y++){
         let row = document.createElement('div');
@@ -34,7 +38,6 @@ window.onload=async function(){
             frontSide.appendChild(frontImage);
             card.appendChild(frontSide);
 
-
             //..and a back side
             let backside = document.createElement('div');
             backside.className = "card__face card__face--back";
@@ -42,28 +45,11 @@ window.onload=async function(){
             sideIndex++;
             //..with a random image:
             let backImage = document.createElement('img');
-            let imageIndex = Math.floor(Math.random() * 1000);
+            let imageIndex = Math.floor(Math.random() * imagesLeft);
+            backImage.src = await imageUrls[imageIndex];
 
-
-            while (usedIndexes.indexOf(imageIndex)>=0){
-                imageIndex = Math.floor(Math.random() * 1000);
-            }
-
-            let imageExists = false;
-            while(!imageExists){
-                let imageUrl = "https://picsum.photos/id/" + imageIndex + "/200/200";
-                try {
-                    backImage.src = imageUrl;
-                    imageExists = true;
-                }catch (e) {
-                    console.log("Could not load image");
-                    imageIndex = Math.floor(Math.random() * 1000);
-                    imageExists = false;
-                }
-            }
-
-            usedIndexes.push(imageIndex);
-
+            imageUrls.splice(imageIndex,1);
+            imagesLeft--;
             console.log("Adding image to card");
             backside.appendChild(backImage);
 
@@ -77,7 +63,33 @@ window.onload=async function(){
         row.style.height = "25%";
         page.appendChild(row);
     }
+
 };
+
+async function getImageUrls() {
+    console.log("myTestFuncgtion");
+    let imageUrls = [];
+
+    for(let i = 0; i < numberOFCards/2; i++){
+        let exists = false;
+        while(!exists){
+            //Pick a random image
+            let imageIndex = Math.floor(Math.random() * 1000);
+            let url = "https://picsum.photos/id/" + imageIndex + "/200/200";
+            //Check if it exists
+            let image = await fetch(url,{ method: 'HEAD' });
+            exists = await image.ok;
+            if(exists){
+                //Push two of the same image to the array
+                await imageUrls.push(url);
+                await imageUrls.push(url);
+            }
+        }
+    }
+    return imageUrls.sort(() => Math.random() - 0.5);
+}
+
+
 
 
 
