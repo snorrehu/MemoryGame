@@ -56,6 +56,7 @@ window.onload= async function loadGame(){
                 let cardIndex = await url.match(rex);
                 switch (openCards) {
                     case 0:
+                        console.log("Correct cards: " + correctCards.length);
                         console.log("First card!");
                         console.log("Open cards: " + openCards);
 
@@ -65,6 +66,7 @@ window.onload= async function loadGame(){
                         oldCard = card;
                         break;
                     case 1:
+                        console.log("Correct cards: " + correctCards.length);
                         console.log("Second card!");
                         console.log("Open cards: " + openCards);
 
@@ -78,6 +80,10 @@ window.onload= async function loadGame(){
                         }else{
                             console.log("MATCH: " + oldCardIndex + " vs " + cardIndex);
                             card.classList.toggle('is-flipped');
+                            if(correctCards.length == numberOFCards){
+                                console.log(correctCards.length);
+                                alert("CONGRATULATIONS!")     ;
+                            }
                             correctCards.push(oldCard);
                             correctCards.push(card);
                             match = true;
@@ -85,6 +91,7 @@ window.onload= async function loadGame(){
                         openCards = 2;
                         break;
                     case 2:
+                        console.log("Correct cards: " + correctCards.length);
                         console.log("Third card!");
                         console.log("Open cards: " + openCards);
                         //If two not equal cards was last opened, then flip them.
@@ -106,10 +113,6 @@ window.onload= async function loadGame(){
                         }
 
 
-                }
-                if(correctCards.length === numberOFCards){
-                    console.log(correctCards.length);
-                    alert("CONGRATULATIONS!")     ;
                 }
             });
             row.appendChild(card);
