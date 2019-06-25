@@ -1,4 +1,47 @@
-html, body {
+body {
+    font-family: sans-serif;
+    height: 100vh;
+    width: 100vh;
+}
+
+.scene {
+    width: 70%;
+    height: 40%;
+    perspective: 600px;
+}
+
+.card {
+    position: relative;
+    float: left;
+    width: 25%;
+    height: 100%;
+    transition: transform 1s;
+    transform-style: preserve-3d;
+    cursor: pointer;
+    position: relative;
+}
+
+.card.is-flipped {
+    transform: rotateY(180deg);
+}
+
+.card__face {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    backface-visibility: hidden;
+}
+
+.card__face--front {
+    background: red;
+}
+
+.card__face--back {
+    background: blue;
+    transform: rotateY(180deg);
+}
+
+/*html, body {
     height: 100%;
     width: 100%;
 }
@@ -62,5 +105,5 @@ html, body {
 
 .card__face--back--front{
     position: absolute;
-}
+}*/
 

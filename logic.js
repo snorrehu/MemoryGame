@@ -6,63 +6,50 @@ window.onload=async function(){
     console.log("Creating elements!");
     let imageUrls = await getImageUrls();
 
-    let page = document.getElementById("page");
+    let container = document.createElement('div');
+    container.className = "scene scene--card";
+
     let sideIndex = 1;
     let imagesLeft = 16;
     //For each of the three rows
     for(let y = 1;y <= 4; y++){
         let row = document.createElement('div');
-        row.className = "row";
+        row.className = "scene scene--card";
 
-        //..place three columns
+        //..place three cards
         for(let x = 1; x <= 4; x++){
-            let column = document.createElement('div');
-            column.className = "column";
-
-            //..that has a card
             let card = document.createElement('div');
             card.className = "card";
-            column.appendChild(card); //Append the card so that it exists in the DOM when you try to append sides
 
-            //..which has a front side
-            let frontSide = document.createElement('div');
+            //..which has a front side with an image
+            let frontSide = new Image();
+            frontSide.src = 'cardimage.png';
             frontSide.className = "card__face card__face--front";
             frontSide.id = sideIndex.toString();
             sideIndex++;
-            //..with an image:
-            let frontImage = new Image();
-            frontImage.src = 'cardimage.png';
-            frontImage.style.maxHeight = "100%";
-            frontImage.style.maxWidth = "100%";
-            frontSide.appendChild(frontImage);
             card.appendChild(frontSide);
 
-            //..and a back side
-            let backside = document.createElement('div');
-            backside.className = "card__face card__face--back";
-            backside.id = sideIndex;
-            sideIndex++;
-            //..with a random image:
-            let backImage = document.createElement('img');
+            //..and a back side with a random image
+            let backSide = new Image();
             let imageIndex = Math.floor(Math.random() * imagesLeft);
-            backImage.src = await imageUrls[imageIndex];
-            backImage.style.position = "absolute";
+            backSide.src = await imageUrls[imageIndex];
+            backSide.className = "card__face card__face--back";
+            backSide.id = sideIndex.toString();
+            sideIndex++;
 
             imageUrls.splice(imageIndex,1);
             imagesLeft--;
             console.log("Adding image to card");
-            backside.appendChild(backImage);
-
-            card.appendChild(backside);
+            card.appendChild(backSide);
             //..and of course an event listener
             card.addEventListener( 'click', function() {
                 card.classList.toggle('is-flipped');
             });
-            row.appendChild(column);
+            row.appendChild(card);
         }
-        row.style.height = "25%";
-        page.appendChild(row);
+        container.appendChild(row);
     }
+    document.body.appendChild(container);
 
 };
 
