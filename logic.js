@@ -1,6 +1,9 @@
 let numberOFCards = 16;
+let rex = new RegExp('(?<=id/).*(?=/200/)');
+let openIndex;
+let openCards = 0;
 
-window.onload=async function(){
+window.onload= async function loadGame(){
     console.log("DOM Loaded");
 
     console.log("Creating elements!");
@@ -43,12 +46,37 @@ window.onload=async function(){
             card.appendChild(backSide);
             //..and of course an event listener
             card.addEventListener( 'click', function() {
-                card.classList.toggle('is-flipped');
+                let picture = card.childNodes[1];
+                let url = picture.getAttribute('src');
+                let id = url.match(rex);
+                if(openIndex !==id.toString()){
+                    console.log("Old card index: " + openIndex);
+                    console.log("New card index: " + id.toString());
+                    openIndex = id.toString();
+                    card.classList.toggle('is-flipped');
+                }else{
+                    console.log("Old card index: " + openIndex);
+                    console.log("New card index: " + id.toString());
+                    openIndex = id.toString();
+                }
             });
             row.appendChild(card);
         }
         container.appendChild(row);
     }
+    container.style.position="absolute";
+    container.style.marginLeft = "70%";
+
+    let newGameButton = document.createElement('button');
+    newGameButton.innerText = "NEW GAME";
+    newGameButton.style.position="absolute";
+    newGameButton.style.marginLeft = "30%";
+    newGameButton.addEventListener('click',async function () {
+        document.body.innerHTML = '';
+        await loadGame();
+    });
+
+    container.appendChild(newGameButton);
     document.body.appendChild(container);
 
 };
