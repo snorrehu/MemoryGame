@@ -1,11 +1,16 @@
 let numberOFCards = 16;
 let rex = new RegExp('(?<=id/).*(?=/200/)');
-let openIndex;
+let oldCardIndex;
 let openCards = 0;
+let oldCard;
+let correctCards = [];
+let match = false;
 
 window.onload= async function loadGame(){
     console.log("DOM Loaded");
 
+    let inCorrectCards = [];
+    
     console.log("Creating elements!");
     let imageUrls = await getImageUrls();
 
@@ -45,19 +50,66 @@ window.onload= async function loadGame(){
             console.log("Adding image to card");
             card.appendChild(backSide);
             //..and of course an event listener
-            card.addEventListener( 'click', function() {
-                let picture = card.childNodes[1];
-                let url = picture.getAttribute('src');
-                let id = url.match(rex);
-                if(openIndex !==id.toString()){
-                    console.log("Old card index: " + openIndex);
-                    console.log("New card index: " + id.toString());
-                    openIndex = id.toString();
-                    card.classList.toggle('is-flipped');
-                }else{
-                    console.log("Old card index: " + openIndex);
-                    console.log("New card index: " + id.toString());
-                    openIndex = id.toString();
+            card.addEventListener( 'click', async function() {
+                let picture = await card.childNodes[1];
+                let url = await picture.getAttribute('src');
+                let cardIndex = await url.match(rex);
+                switch (openCards) {
+                    case 0:
+                        console.log("First card!");
+                        console.log("Open cards: " + openCards);
+
+                        card.classList.toggle('is-flipped');
+                        oldCardIndex = cardIndex.toString();
+                        openCards = 1;
+                        oldCard = card;
+                        break;
+                    case 1:
+                        console.log("Second card!");
+                        console.log("Open cards: " + openCards);
+
+                        if(oldCardIndex != cardIndex){
+                            console.log("Not a match...: " + oldCardIndex + " vs " + cardIndex);
+                            card.classList.toggle('is-flipped');
+                            match = false;
+                            inCorrectCards.push(oldCard);
+                            inCorrectCards.push(card);
+                            match = false;
+                        }else{
+                            console.log("MATCH: " + oldCardIndex + " vs " + cardIndex);
+                            card.classList.toggle('is-flipped');
+                            correctCards.push(oldCard);
+                            correctCards.push(card);
+                            match = true;
+                        }                                   
+                        openCards = 2;
+                        break;
+                    case 2:
+                        console.log("Third card!");
+                        console.log("Open cards: " + openCards);
+                        //If two not equal cards was last opened, then flip them.
+                        if(!match){
+                            console.log("Last pair was NOT a match! Flipping incorrect cards back:");
+                            console.log(inCorrectCards[0]);
+                            console.log(inCorrectCards[1]);
+                            inCorrectCards[0].classList.toggle('is-flipped');
+                            inCorrectCards[1].classList.toggle('is-flipped');
+                            inCorrectCards = [];
+                            openCards = 0;
+                        }else{
+                            console.log("Last pair was a match! Flipping card");
+                            card.classList.toggle('is-flipped');
+                            inCorrectCards = [];
+                            openCards = 1;
+                            oldCard = card;
+                            match = false;
+                        }
+
+
+                }
+                if(correctCards.length === numberOFCards){
+                    console.log(correctCards.length);
+                    alert("CONGRATULATIONS!")     ;
                 }
             });
             row.appendChild(card);
@@ -73,6 +125,10 @@ window.onload= async function loadGame(){
     newGameButton.style.marginLeft = "30%";
     newGameButton.addEventListener('click',async function () {
         document.body.innerHTML = '';
+        correctCards = [];
+        oldCard = undefined;
+        openCards = 0;
+        oldCardIndex = 0;
         await loadGame();
     });
 
